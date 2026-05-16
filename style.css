@@ -1,0 +1,170 @@
+/* ==========================================
+   高饱和度迪士尼/皮克斯梦幻色彩美学
+   ========================================== */
+:root {
+    --disney-pink: #ff758f;
+    --pixar-bubblegum: #ff8fa3;
+    --magic-gold: #f1c40f;
+    --neon-heart: #ff4d6d;
+    --paper-cream: #fff9f2;
+}
+
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #3a1c24 0%, #120508 100%);
+    font-family: 'Noto Serif SC', serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#disney-canvas { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+
+/* 舞台分镜控制网格 */
+.stage {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stage.active { opacity: 1; pointer-events: auto; }
+.disney-toast { position: absolute; top: 25px; color: var(--pixar-bubblegum); font-family: 'ZCOOL KuaiLe', cubic-bezier; font-size: 1rem; letter-spacing: 2px; text-shadow: 0 0 8px rgba(255,143,163,0.5); z-index: 20; text-align: center; width: 100%; }
+
+/* ==========================================
+   第一幕：皮克斯弹性物理移动头像
+   ========================================== */
+#moving-avatar {
+    width: 140px; height: 140px; position: absolute;
+    background-size: cover; background-position: center;
+    border: 6px solid #fff; border-radius: 50%;
+    box-shadow: 0 0 30px var(--neon-heart), 0 15px 30px rgba(0,0,0,0.4);
+    cursor: pointer; transform-origin: center bottom;
+}
+.mickey-ears-deco {
+    position: absolute; top: -25px; left: -25px; width: 190px; height: 190px;
+    border-left: 35px solid rgba(255,255,255,0.2); border-top: 35px solid rgba(255,255,255,0.2);
+    border-radius: 50%; pointer-events: none; opacity: 0.4; display: none; /* 可按需开启 */
+}
+.disney-bubble-hint {
+    position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, #ff4d6d, #ff758f); color: white;
+    padding: 8px 20px; border-radius: 30px; font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 0.95rem; white-space: nowrap; box-shadow: 0 8px 20px rgba(255,77,109,0.5);
+    animation: bubbleFloat 0.6s ease-in-out infinite alternate;
+}
+
+/* ==========================================
+   第二幕：唯美电影感毛玻璃情书
+   ========================================== */
+.cinema-overlay { width: 100%; height: 100%; background: rgba(18,5,8,0.65); backdrop-filter: blur(20px); display: flex; justify-content: center; align-items: center; }
+.magic-letter {
+    width: 90%; max-width: 480px; max-height: 80vh; background: #fffcf7;
+    padding: 40px 30px; box-sizing: border-box; border-radius: 24px;
+    border: 3px solid #ffccd5; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    position: relative; display: flex; flex-direction: column;
+}
+.letter-ribbon { position: absolute; top: -15px; left: 30px; background: #ff4d6d; color: white; padding: 6px 16px; font-family: 'Pacifico', cursive; border-radius: 8px; transform: rotate(-4deg); box-shadow: 0 5px 12px rgba(0,0,0,0.2); }
+.magic-letter h2 { font-family: 'ZCOOL KuaiLe', sans-serif; color: #ff4d6d; text-align: center; margin: 15px 0 20px 0; font-size: 1.8rem; }
+.letter-body-wrapper { flex: 1; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; }
+.letter-body-wrapper::-webkit-scrollbar { width: 5px; }
+.letter-body-wrapper::-webkit-scrollbar-thumb { background: #ffccd5; border-radius: 3px; }
+.letter-content { font-size: 1.1rem; line-height: 1.9; color: #4a373b; white-space: pre-wrap; text-align: justify; font-weight: 400; }
+.disney-btn { width: 100%; background: linear-gradient(135deg, #ff4d6d, #ff758f); color: white; border: none; padding: 15px; font-size: 1.2rem; font-family: 'ZCOOL KuaiLe', sans-serif; cursor: pointer; border-radius: 16px; box-shadow: 0 8px 25px rgba(255,77,109,0.4); transition: transform 0.2s; }
+.disney-btn:hover { transform: scale(1.02); }
+
+/* ==========================================
+   第三幕：520快乐恋恋笔记本自适应舞台矩阵
+   ========================================== */
+.responsive-screen-matrix {
+    width: 480px; height: 680px; /* 完美比例视口 */
+    position: relative; transform-origin: center center;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.notebook { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+.page { width: 100%; height: 100%; position: absolute; top:0; left:0; transform-origin: left center; transform-style: preserve-3d; transition: transform 1.3s cubic-bezier(0.45, 0, 0.15, 1); cursor: pointer; }
+.front, .back { position: absolute; width: 100%; height: 100%; padding: 35px 25px; box-sizing: border-box; backface-visibility: hidden; box-shadow: inset 20px 0 40px rgba(0,0,0,0.15), 5px 15px 35px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; border-radius: 0 24px 24px 0; overflow: hidden; }
+.front { background: var(--paper-cream); }
+.back { background: #fcf9f5; transform: rotateY(180deg); border-radius: 24px 0 0 24px; border-left: 2px solid #eae6e0; }
+.page.flipped { transform: rotateY(-180deg); }
+
+/* 炫华皮克斯封面 */
+.disney-cover {
+    background: linear-gradient(135deg, #471926 0%, #1a050b 100%) !important;
+    color: var(--magic-gold); border-left: 18px solid #0b0103; justify-content: center !important; text-align: center;
+    box-shadow: inset 5px 0 15px rgba(241,196,15,0.2), 10px 20px 40px rgba(0,0,0,0.6) !important;
+}
+.castle-logo { font-size: 75px; filter: drop-shadow(0 0 15px var(--magic-gold)); animation: castleGlow 3s ease-in-out infinite alternate; }
+.main-title { font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 3.5rem; margin: 15px 0 0 0; background: linear-gradient(to bottom, #fff3cc, var(--magic-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+.sub-title { font-family: 'Ma Shan Zheng', cursive; font-size: 2rem; letter-spacing: 4px; color: #ff8fa3; margin: 10px 0 0 0; }
+.pixar-spark-line { width: 120px; height: 3px; background: linear-gradient(90deg, transparent, var(--magic-gold), transparent); margin: 20px auto; }
+.click-guide-finger { font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 0.9rem; color: #fff; opacity: 0.6; margin-top: 45px; animation: pulse 1.5s infinite alternate; }
+
+/* ==========================================
+   精细化照片安全隔离区（绝对不遮挡、不爆框）
+   ========================================== */
+.photo-zone {
+    width: 100%; height: 340px; /* 锁死高度上限 */
+    display: flex; justify-content: center; align-items: center; position: relative;
+}
+
+.frame-style {
+    width: 100%; height: 100%; overflow: hidden; background: #fff;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.4s ease;
+}
+/* 魔法防线：图片采用 object-fit: contain，确保整张照片完整展示，绝不裁剪边缘 */
+.frame-style img {
+    width: 100%; height: 100%; object-fit: contain; background: #faf5ee;
+}
+
+/* 百变卡通相框形状 */
+.shape-mickey { border-radius: 40% 40% 45% 45% / 45% 45% 40% 40%; border: 10px solid #fff; background: #fff !important; }
+.shape-polaroid { height: 340px; padding: 12px 12px 55px 12px; box-sizing: border-box; background: white; border: 1px solid #eee; }
+.shape-magic-rect { border-radius: 40px 15px 40px 15px; border: 10px solid #fff; }
+.shape-cloud { border-radius: 50% 50% 40% 40% / 40% 40% 50% 50%; border: 10px solid #fff; }
+.shape-star-cut { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border: 10px solid #fff; }
+
+/* 文字安全包裹区：运用自适应流动布局 */
+.text-zone {
+    flex: 1; width: 100%; display: flex; justify-content: center; align-items: center;
+    margin-top: 15px; margin-bottom: 30px; overflow-y: auto;
+}
+.text-zone::-webkit-scrollbar { width: 0px; }
+.romantic-prose {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(1.15rem, 4vw, 1.4rem); /* 随屏幕动态缩放字阶 */
+    color: #3d2429; line-height: 1.7; text-align: center; margin: 0; padding: 0 10px;
+}
+
+.page-footer-index { position: absolute; bottom: 15px; font-size: 0.85rem; font-weight: bold; color: #a69296; letter-spacing: 1px; }
+.cartoon-sticker { position: absolute; font-size: 45px; pointer-events: none; animation: cartoonWobble 2s ease-in-out infinite alternate; }
+
+/* ==========================================
+   好莱坞高级独立语音舱
+   ========================================== */
+.voice-cabin {
+    position: absolute; bottom: 4%; right: 4%; background: rgba(26,5,11,0.92);
+    border: 2px solid rgba(241,196,15,0.4); padding: 15px 25px; border-radius: 20px;
+    color: white; width: 270px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px); transform: translateY(150px); opacity: 0;
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); z-index: 100;
+    display: flex; flex-direction: column; align-items: center;
+}
+.voice-cabin.reveal { transform: translateY(0); opacity: 1; }
+.voice-cabin h4 { margin: 0 0 4px 0; font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 1.05rem; color: var(--magic-gold); letter-spacing: 1px; }
+.voice-cabin p { margin: 0 0 12px 0; font-size: 0.75rem; opacity: 0.5; }
+#outro-voice { width: 100%; height: 32px; }
+
+.voice-visualizer { display: flex; align-items: flex-end; height: 18px; gap: 4px; margin-bottom: 10px; }
+.voice-visualizer span { width: 3px; height: 4px; background: var(--disney-pink); border-radius: 2px; animation: barDance 0.6s ease-in-out infinite alternate; }
+.voice-visualizer span:nth-child(even) { animation-duration: 0.4s; }
+.voice-visualizer span:nth-child(3n) { animation-duration: 0.7s; }
+
+/* ==========================================
+   物理动效动画库
+   ========================================== */
+@keyframes bubbleFloat { from { transform: translateX(-50%) translateY(0); } to { transform: translateX(-50%) translateY(-6px); } }
+@keyframes cartoonWobble { from { transform: scale(0.9) rotate(-6deg); } to { transform: scale(1.1) rotate(6deg); } }
+@keyframes castleGlow { from { filter: drop-shadow(0 0 10px var(--magic-gold)); } to { filter: drop-shadow(0 0 25px #fff); } }
+@keyframes pulse { from { opacity: 0.4; } to { opacity: 0.9; } }
+@keyframes barDance { from { height: 4px; } to { height: 18px; } }

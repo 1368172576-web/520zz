@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zezebaby's Magic World - 520</title>
+    <!-- 引入迪士尼/皮克斯风格的梦幻卡通艺术字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Pacifico&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@400;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 电影全景光影与星尘画布 -->
+    <canvas id="disney-canvas"></canvas>
+
+    <!-- 核心音频舱 -->
+    <audio id="bg-music" src="assets/bgm.mp3" loop></audio>
+
+    <!-- ==========================================
+       【第一幕：心动粉红捉迷藏】
+       ========================================== -->
+    <div id="stage-1" class="stage active">
+        <div class="disney-toast">🪄 点击屏幕任何地方唤醒魔法</div>
+        <div id="moving-avatar" style="background-image: url('assets/avatar.jpg');">
+            <div class="mickey-ears-deco"></div>
+            <div class="disney-bubble-hint">💖 来抓我呀 ✨</div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       【第二幕：仙子毛玻璃情书】
+       ========================================== -->
+    <div id="stage-2" class="stage">
+        <div class="cinema-overlay">
+            <div class="magic-letter">
+                <div class="letter-ribbon">🎁 For You</div>
+                <h2>致 泽泽宝宝的一封信 🌸</h2>
+                <div class="letter-body-wrapper">
+                    <div class="letter-content">
+美丽的泽泽，见字如面：
+
+当你在屏幕上抓住我的那一刻，你就已经抓住了我整颗心脏啊啊啊啊啊！~~~
+
+今天是我们在一起的第613天。盯着这个数字看的时候，心里酥酥麻麻的。14688个小时，大大小小的屏幕见证了我们的喜怒哀乐，最神奇的是，我竟然觉得我们依然停留在最初相爱的那天，每天醒来，对你的喜欢都比昨天更浓烈一些。异地恋是一场苦旅，但因为是你，这段旅程变成了我生命里最甜的冒险。
+
+我常常在夜深人静、看着手机屏幕里你的照片时失神。在这个快餐爱情的时代，大家都习惯了走马观花，可我何其有幸，能在人海茫茫中，毫无保留地溺死在你的温柔里。我不知道该怎么描述对你的心动，但是我直到今天，每当手机响起你的提示音，心跳还是会漏掉半拍；每天清晨醒来，想到在这个世界的另一个城市里有你爱着我，那种满溢出来的幸福感，和我们刚在一起的第一天一模一样。
+
+谢谢你，我最宝贝的女孩。在这个充满变数的世界里，你用你的善良、美好和毫无保留的包容，给了我兵荒马乱的青春里，最笃定、最深沉的安稳。
+
+电影《恋恋笔记本》里说：“一生至少该有一次，为了某个人而忘了自己。”对我而言，那个让我甘愿如此的人，就是你。
+
+热恋期不会结束，因为我对你的爱每天都在刷新。未来的路还很长，不管是鲜花满地还是荆棘丛生，我都想坚定不移地陪你走下去。相恋快乐，520，我爱你。
+
+然后，我准备了一本笔记本。不论未来的世界如何变化，这本恋恋笔记本都会永远为你保存我专属的偏爱，么么！~~~
+                    </div>
+                </div>
+                <button class="disney-btn" onclick="transitionToNotebook()">打开恋恋笔记本 📖</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       【第三幕：520快乐恋恋笔记本】
+       ========================================== -->
+    <div id="stage-3" class="stage">
+        <!-- 绝对抗遮挡自适应电影舞台 -->
+        <div class="responsive-screen-matrix">
+            <div class="notebook" id="love-notebook">
+                
+                <!-- 【第 1 页：奢华迪士尼开场封面】 -->
+                <div class="page" style="z-index: 22;">
+                    <div class="front disney-cover">
+                        <div class="castle-logo">🏰</div>
+                        <h1 class="main-title">520 快乐</h1>
+                        <div class="pixar-spark-line"></div>
+                        <p class="sub-title">恋恋笔记本</p>
+                        <div class="click-guide-finger">✨  来翻阅我们的故事叭 ✨</div>
+                    </div>
+                    <div class="back">
+                        <div class="photo-zone">
+                            <!-- 默认调用assets/1.jpg -->
+                            <div class="frame-style shape-mickey">
+                                <img src="assets/1.jpg" alt="Our Love 1">
+                            </div>
+                            <span class="cartoon-sticker">🎈</span>
+                        </div>
+                        <div class="text-zone">
+                            <p class="romantic-prose">这是我第一次的美梦开始，是我无法自拔爱上你的笔记本序章</p>
+                        </div>
+                        <div class="page-footer-index">1 / 22</div>
+                    </div>
+                </div>
+
+                <!-- 第 2 ~ 21 页将由 script.js 自动生成注入 -->
+
+            </div>
+        </div>
+
+        <!-- 终章好莱坞语音舱 -->
+        <div id="hollywood-voice-cabin" class="voice-cabin">
+            <div class="voice-visualizer">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <h4>🎵 听，我的心意和爱意...</h4>
+            <audio id="outro-voice" src="assets/voice.mp3" controls></audio>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
