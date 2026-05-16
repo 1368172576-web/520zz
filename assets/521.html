@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>520快乐 - 我们的浪漫电影</title>
+    <style>
+        /* --- 核心大片质感与色彩定义 --- */
+        :root {
+            --pink-light: #fff0f5;
+            --pink-base: #ffb6c1;
+            --pink-deep: #ff69b4;
+            --gold-glow: #ffd700;
+            --hollywood-shadow: rgba(255, 105, 180, 0.3);
+            --disney-font: 'PingFang SC', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffe4e1, #ffb6c1, #ffc0cb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: var(--disney-font);
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- 粒子特效（泡泡与爱心） --- */
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,182,193,0.4) 100%);
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+        }
+
+        .heart-particle {
+            position: absolute;
+            bottom: -20px;
+            color: var(--pink-deep);
+            font-size: 20px;
+            animation: floatUp 6s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- 场景控制 --- */
+        .scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* --- 场景 1：追逐游戏 --- */
+        #scene-catch {
+            pointer-events: auto;
+        }
+
+        .floating-avatar {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 25px var(--pink-deep), inset 0 0 15px rgba(0,0,0,0.2);
+            background: url('avatar.jpg') no-repeat center/cover, #ffb6c1; /* 可替换本地头像 */
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s linear;
+        }
+
+        .floating-avatar::after {
+            content: '来抓我呀 🌸';
+            position: absolute;
+            bottom: -35px;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: var(--pink-deep);
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- 场景 2：好莱坞情书 --- */
+        .letter-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            width: 85%;
+            max-width: 550px;
+            max-height: 80vh;
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 0 0 2px rgba(255,255,255,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: cinematicPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .letter-content {
+            flex: 1;
+            overflow-y: auto;
+            width: 100%;
+            margin-bottom: 25px;
+            padding-right: 10px;
+            color: #4a4a4a;
+            line-height: 1.8;
+            font-size: 16px;
+            text-align: justify;
+        }
+
+        .letter-content h2 {
+            color: var(--pink-deep);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        /* 自定义滚动条 */
+        .letter-content::-webkit-scrollbar { width: 6px; }
+        .letter-content::-webkit-scrollbar-thumb { background: var(--pink-base); border-radius: 10px; }
+
+        .btn-cinema {
+            background: linear-gradient(45deg, var(--pink-deep), #ff85a2);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px var(--hollywood-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .btn-cinema:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px var(--hollywood-shadow);
+        }
+
+        /* --- 场景 3：皮克斯梦幻笔记本 --- */
+        .notebook-container {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 550px;
+            perspective: 2000px; /* 3D透视 */
+        }
+
+        .notebook-title {
+            position: absolute;
+            top: -60px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 32px;
+            color: white;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 20px var(--gold-glow);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        /* 封面与封底硬皮质感 */
+        .page.cover-front {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border-radius: 0 15px 15px 0;
+            box-shadow: inset -5px 0 10px rgba(0,0,0,0.2), 5px 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .page.cover-back {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            border-radius: 15px 0 0 15px;
+            transform: rotateY(0deg);
+            left: 0;
+            width: 50%;
+        }
+
+        /* 普通内页 */
+        .page-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: #fffdf9; /* 复古纸张感 */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 3px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .page-face.front {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .page-face.back {
+            transform: rotateY(180deg);
+            border-radius: 12px 0 0 12px;
+            box-shadow: inset -3px 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* 翻页激活动态 */
+        .page.flipped {
+            transform: rotateY(-180deg);
+            z-index: 10;
+        }
+
+        /* 电影分镜照片排版 (不同形状) */
+        .cinematic-frame {
+            width: 100%;
+            height: 65%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+            overflow: hidden;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+
+        /* 每一页独特的照片裁剪形状 - 皮克斯动画感 */
+        .shape-0 { border-radius: 16px; } /* 圆角矩形 */
+        .shape-1 { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); } /* 五边形 */
+        .shape-2 { border-radius: 50% 50% 0 0; } /* 拱形门 */
+        .shape-3 { transform: rotate(-3deg); border: 8px solid #fff; } /* 拍立得风 */
+        .shape-4 { clip-path: inset(5% 5% 5% 5% round 20px 50px); } /* 异形圆角 */
+
+        .cinematic-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 保证照片完整展示 */
+            background: #fff;
+        }
+
+        /* 情感文字排版 */
+        .romantic-text {
+            width: 100%;
+            height: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+            padding: 10px;
+            word-break: break-all;
+            overflow-y: auto;
+        }
+
+        /* --- 场景 4：彩蛋录音 --- */
+        .audio-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: cinematicPop 1s ease forwards;
+        }
+
+        .vinyl-record {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #333 30%, #111 100%);
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4), 0 0 0 10px rgba(255,255,255,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotateRecord 5s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .vinyl-record.playing {
+            animation-play-state: running;
+        }
+
+        .vinyl-center {
+            width: 50px;
+            height: 50px;
+            background: var(--pink-deep);
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        @keyframes rotateRecord {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes cinematicPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 适配移动端小屏幕 */
+        @media (max-width: 600px) {
+            .notebook-container { height: 75vh; }
+            .book { width: 100%; }
+            .romantic-text { font-size: 13px; }
+            .letter-card { padding: 25px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 隐藏的音频元素 -->
+    <audio id="bg-music" loop>
+        <source src="bgm.mp3" type="audio/mpeg"> <!-- 可替换本地背景音乐 -->
+    </audio>
+    <audio id="final-voice">
+        <source src="audio.mp3" type="audio/mpeg"> <!-- 可替换本地结尾录音 -->
+    </audio>
+
+    <!-- 满屏粉红泡泡和爱心容器 -->
+    <div class="particle-container" id="particle-box"></div>
+
+    <!-- 场景 1：追逐游戏 -->
+    <div class="scene active" id="scene-catch">
+        <div class="floating-avatar" id="avatar" onclick="catchAvatar()"></div>
+    </div>
+
+    <!-- 场景 2：精美信件 -->
+    <div class="scene" id="scene-letter">
+        <div class="letter-card">
+            <div class="letter-content">
+                <h2>致最亲爱的你 💌</h2>
+                <!-- 可自由替换修改的浪漫文字内容（自适应） -->
+                <p>听闻远方有你，动身跋涉千里。吹过你吹过的风，这算不算相拥；走过你走过的路，这算不算相逢。</p>
+                <br>
+                <p>在所有人类创造的词汇里，我最喜欢的是你的名字。世界上有千千万万朵玫瑰，但唯有你是我的独一无二。今天是一个关于爱的日子，而我关于爱的所有构想，都有你的名字在里面。</p>
+                <br>
+                <p>这本属于我们的“恋恋笔记本”，记录着那些闪闪发光的瞬间。准备好了吗？点击下方，开启属于我们的电影世界。</p>
+            </div>
+            <button class="btn-cinema" onclick="goToNotebook()">恋恋笔记本</button>
+        </div>
+    </div>
+
+    <!-- 场景 3：恋恋笔记本（520快乐） -->
+    <div class="scene" id="scene-notebook">
+        <div class="notebook-container">
+            <div class="notebook-title">✨ 520快乐 · 我们的电影纪念册 ✨</div>
+            <div class="book" id="book">
+                <!-- 由 JavaScript 动态生成 22 页内页 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 场景 4：彩蛋录音 -->
+    <div class="scene" id="scene-audio">
+        <div class="audio-card">
+            <div class="vinyl-record" id="record-disk" onclick="toggleFinalVoice()">
+                <div class="vinyl-center"></div>
+            </div>
+            <h3 style="color: var(--pink-deep); margin-bottom: 10px;">最后一页的惊喜</h3>
+            <p style="color: #666; font-size: 14px;" id="audio-hint">点击黑胶唱片，倾听我想对你说的话 🎵</p>
+        </div>
+    </div>
+
+    <script>
+        /* --- 基础配置及数据定义 --- */
+        // 22页表白浪漫文字与对应照片（文字自适应，照片路径可改）
+        const albumData = [
+            { text: "第一页：那是我们故事的开始，天空刚好是你喜欢的颜色。", img: "1.jpg" },
+            { text: "第二页：眼神交汇的那一秒，心跳漏掉了一拍。", img: "2.jpg" },
+            { text: "第三页：有你在身边的下午，连空气都是草莓味的。", img: "3.jpg" },
+            { text: "第四页：去年的这场雨，因为你，变得格外温柔。", img: "4.jpg" },
+            { text: "第五页：陪你走过漫长街道，心愿是能一直走到白头。", img: "5.jpg" },
+            { text: "第六页：阳光落在你脸上的格调，是我相机里最美的定格。", img: "6.jpg" },
+            { text: "第七页：大片里的浪漫千万种，但我只贪恋你的一个微笑。", img: "7.jpg" },
+            { text: "第八页：每到深夜，你的名字就是我漫长梦境的解药。", img: "8.jpg" },
+            { text: "第九页：不管是迪士尼的梦幻，还是民间的柴米油盐，我都想和你一起。", img: "9.jpg" },
+            { text: "第十页：你是冬日里的暖阳，驱散我世界里所有的阴霾。", img: "10.jpg" },
+            { text: "第十一页：世界很大，但我的眼里只能装下一个小小的你。", img: "11.jpg" },
+            { text: "第十二页：每次看你看过的电影，总觉得男主角像我一样幸运。", img: "12.jpg" },
+            { text: "第十三页：想和你分享每一个黄昏，和每一次日落的温柔。", img: "13.jpg" },
+            { text: "第十四页：四季在轮转，唯有对你的喜欢，只增不减。", img: "14.jpg" },
+            { text: "第十五页：春风十里，不如你在耳边的一句轻轻呢喃。", img: "15.jpg" },
+            { text: "第十六页：多庆幸能被你坚定的选择，像极了童话最好的结局。", img: "16.jpg" },
+            { text: "第十七页：未来还有很长很长，我们要一起写更多的故事。", img: "17.jpg" },
+            { text: "第十八页：你是我平淡生活里，最耀眼也是最诗意的奇迹。", img: "18.jpg" },
+            { text: "第十九页：执子之手，便是一生最伟大的冒险。", img: "19.jpg" },
+            { text: "第二十页：感谢你包容我所有的脾气，让我做最真实的自己。", img: "20.jpg" },
+            { text: "第二十一页：这一路走来，点点滴滴，都是写给时间的绝美情书。", img: "21.jpg" },
+            { text: "第二十二页：故事未完待续，执笔之人永远是你。520快乐！", img: "22.jpg" }
+        ];
+
+        /* --- 粒子动效生成器（泡泡和爱心） --- */
+        const particleBox = document.getElementById('particle-box');
+        function createParticle() {
+            const isHeart = Math.random() > 0.5;
+            const element = document.createElement('div');
+            
+            if(isHeart) {
+                element.className = 'heart-particle';
+                element.innerHTML = '❤️';
+            } else {
+                element.className = 'particle';
+                const size = Math.random() * 20 + 10 + 'px';
+                element.style.width = size;
+                element.style.height = size;
+            }
+            
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.animationDuration = Math.random() * 4 + 5 + 's';
+            particleBox.appendChild(element);
+            
+            setTimeout(() => { element.remove(); }, 8000);
+        }
+        setInterval(createParticle, 300);
+
+        /* --- 场景1：全屏规律移动的头像逻辑 --- */
+        const avatar = document.getElementById('avatar');
+        let posX = Math.random() * (window.innerWidth - 120);
+        let posY = Math.random() * (window.innerHeight - 120);
+        let speedX = 3;
+        let speedY = 2.5;
+
+        function moveAvatar() {
+            if (!document.getElementById('scene-catch').classList.contains('active')) return;
+            
+            posX += speedX;
+            posY += speedY;
+
+            if (posX <= 0 || posX >= window.innerWidth - 120) speedX = -speedX;
+            if (posY <= 0 || posY >= window.innerHeight - 120) speedY = -speedY;
+
+            avatar.style.left = posX + 'px';
+            avatar.style.top = posY + 'px';
+
+            requestAnimationFrame(moveAvatar);
+        }
+        // 初始化移动
+        requestAnimationFrame(moveAvatar);
+
+        function catchAvatar() {
+            // 播放背景音乐
+            document.getElementById('bg-music').play().catch(e => console.log("需用户手动触发音频"));
+            switchScene('scene-catch', 'scene-letter');
+        }
+
+        /* --- 场景切换控制 --- */
+        function switchScene(fromId, toId) {
+            document.getElementById(fromId).classList.remove('active');
+            document.getElementById(toId).classList.add('active');
+        }
+
+        function goToNotebook() {
+            switchScene('scene-letter', 'scene-notebook');
+            initNotebook();
+        }
+
+        /* --- 场景3：3D相册笔记本初始化与逻辑 --- */
+        let currentPage = 0;
+        let totalPages = 22;
+
+        function initNotebook() {
+            const book = document.getElementById('book');
+            book.innerHTML = ''; // 清空结构
+
+            // 生成 22 个翻页双面结构
+            albumData.forEach((data, index) => {
+                const page = document.createElement('div');
+                page.className = `page page-${index}`;
+                page.style.zIndex = totalPages - index;
+                
+                // 赋予好莱坞/皮克斯分镜感的不同裁剪形状(0-4循环)
+                const shapeClass = `shape-${index % 5}`;
+
+                page.innerHTML = `
+                    <div class="page-face front">
+                        <div class="cinematic-frame ${shapeClass}">
+                            <img src="${data.img}" alt="我们的回忆" onerror="this.src='https://picsum.photos/400/500?random=${index}'">
+                        </div>
+                        <div class="romantic-text">${data.text}</div>
+                    </div>
+                    <div class="page-face back">
+                        <div style="color:var(--pink-deep); font-size:30px;">🌸</div>
+                        <p style="color:#aaa; font-size:12px;">翻开下一页的浪漫</p>
+                    </div>
+                `;
+
+                // 点击翻页事件
+                page.addEventListener('click', function() {
+                    if (index === currentPage) {
+                        page.classList.add('flipped');
+                        currentPage++;
+                        // 当翻完最后一页
+                        if (currentPage === totalPages) {
+                            setTimeout(() => {
+                                switchScene('scene-notebook', 'scene-audio');
+                                // 背景音乐淡出
+                                fadeOutBGM();
+                            }, 1200);
+                        }
+                    } else if (index === currentPage - 1) {
+                        // 允许往回翻页
+                        page.classList.remove('flipped');
+                        currentPage--;
+                    }
+                });
+
+                book.appendChild(page);
+            });
+        }
+
+        function fadeOutBGM() {
+            const bgm = document.getElementById('bg-music');
+            let vol = 1;
+            const interval = setInterval(() => {
+                if (vol > 0.1) {
+                    vol -= 0.1;
+                    bgm.volume = vol;
+                } else {
+                    bgm.pause();
+                    clearInterval(interval);
+                }
+            }, 100);
+        }
+
+        /* --- 场景4：录音控制 --- */
+        let isVoicePlaying = false;
+        function toggleFinalVoice() {
+            const voice = document.getElementById('final-voice');
+            const disk = document.getElementById('record-disk');
+            const hint = document.getElementById('audio-hint');
+
+            if (!isVoicePlaying) {
+                voice.play();
+                disk.classList.add('playing');
+                hint.innerText = "正在播放属于我们的私密录音... ❤️";
+                isVoicePlaying = true;
+            } else {
+                voice.pause();
+                disk.classList.remove('playing');
+                hint.innerText = "点击黑胶唱片，继续倾听 🎵";
+                isVoicePlaying = false;
+            }
+        }
+
+        // 窗口尺寸变化自适应修正头像轨迹
+        window.addEventListener('resize', () => {
+            posX = Math.min(posX, window.innerWidth - 120);
+            posY = Math.min(posY, window.innerHeight - 120);
+        });
+    </script>
+</body>
+</html>
